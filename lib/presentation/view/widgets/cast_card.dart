@@ -72,7 +72,7 @@ class CastCard extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        actor.name ?? '',
+                        actor.name,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: AppTextStyle.appText12Regular.copyWith(

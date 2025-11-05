@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:tmdb_app/core/utils/choppers.dart';
 import 'package:tmdb_app/core/utils/providers.dart';
 import 'package:tmdb_app/presentation/view/screens/home/home_screen.dart';
+import 'package:tmdb_app/presentation/view/screens/spalsh/splash_screen.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -18,7 +19,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         ),
-        home: HomeScreen(),
+        home: SplashScreen(),
       ),
     );
   }
