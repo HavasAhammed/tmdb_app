@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:tmdb_app/view/screens/home/home_screen.dart';
+import 'package:provider/provider.dart';
+import 'package:tmdb_app/core/utils/providers.dart';
+import 'package:tmdb_app/presentation/view/screens/home/home_screen.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -7,12 +9,16 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+    return MultiProvider(
+      providers: Providers.providers,
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'TMDB App',
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+        ),
+        home: HomeScreen(),
       ),
-      home: HomeScreen(),
     );
   }
 }
