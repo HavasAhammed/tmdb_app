@@ -4,8 +4,10 @@ class ApiEndpoints {
 
   // Movies endpoints
 
+  static const String movieUrl = "$baseUrl/movie/";
   static const String popularMovies = "$baseUrl/movie/popular";
   static const String topRatedMovies = "$baseUrl/movie/top_rated";
+  static const String nowPlayingMovies = "$baseUrl/movie/now_playing";
 
   // Movie Credits
   static String movieCredits(int movieId) => '$baseUrl/movie/$movieId/credits';

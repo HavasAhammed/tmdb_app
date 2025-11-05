@@ -1,93 +1,43 @@
-import 'package:tmdb_app/core/network/api_service.dart';
+import 'package:chopper/chopper.dart';
+import 'package:tmdb_app/core/interceptors/error_interceptor.dart';
+import 'package:tmdb_app/core/interceptors/header_interceptor.dart';
 import 'package:tmdb_app/core/utils/api_endpoints.dart';
-import 'package:tmdb_app/data/models/result.dart';
-import 'package:tmdb_app/data/models/movie/movie_response.dart';
-import 'package:tmdb_app/data/models/cast/movie_credits.dart';
+part 'movie_service.chopper.dart';
 
-class MovieService {
-  final ApiService apiService;
+@ChopperApi()
+abstract class MovieService extends ChopperService {
+  // Get Favorite Movies
+  @Get(path: 'popular')
+  Future<Response<dynamic>> getFavoriteMovies({
+    @Query('api_key') String apiKey = ApiEndpoints.apiKey,
+    @Query('page') int? page,
+  });
 
-  MovieService({required this.apiService});
+  // Get Trending Movies
+  @Get(path: 'top_rated')
+  Future<Response<dynamic>> getTopRatedMovies({
+    @Query('api_key') String apiKey = ApiEndpoints.apiKey,
+    @Query('page') int? page,
+  });
 
-  Future<Result<MovieResponse>> getPopularMovies({int page = 1}) async {
-    const endpoint = ApiEndpoints.popularMovies;
-    final params = {'page': page.toString()};
-    final res = await apiService.get(endpoint, params: params);
+  // Get WatchList Movies
+  @Get(path: 'now_playing')
+  Future<Response<dynamic>> getWatchListMovies({
+    @Query('api_key') String apiKey = ApiEndpoints.apiKey,
+    @Query('page') int? page,
+  });
 
-    if (!res.success) {
-      return Result<MovieResponse>(
-        success: false,
-        message: res.message,
-        userMessage: res.userMessage,
-        status: ResultStatus.failed,
-      );
-    }
-
-    try {
-      final decoded = res.value;
-      if (decoded is Map<String, dynamic>) {
-        final movieResp = MovieResponse.fromJson(decoded);
-        return Result<MovieResponse>(
-          success: true,
-          value: movieResp,
-          total: movieResp.totalResults,
-          status: ResultStatus.done,
-        );
-      } else {
-        return Result<MovieResponse>(
-          success: false,
-          message: ErrorMessage('Unexpected response format', null),
-          userMessage: 'Invalid data from server',
-          status: ResultStatus.failed,
-        );
-      }
-    } catch (e, stack) {
-      return Result<MovieResponse>(
-        success: false,
-        message: ErrorMessage(e.toString(), stack),
-        userMessage: 'Failed to parse movie data',
-        status: ResultStatus.failed,
-      );
-    }
-  }
-
-  Future<Result<MovieCredits>> getMovieCredits(int movieId) async {
-    final endpoint = ApiEndpoints.movieCredits(movieId);
-    final res = await apiService.get(endpoint);
-
-    if (!res.success) {
-      return Result<MovieCredits>(
-        success: false,
-        message: res.message,
-        userMessage: res.userMessage,
-        status: ResultStatus.failed,
-      );
-    }
-
-    try {
-      final data = res.value;
-      if (data is Map<String, dynamic>) {
-        final credits = MovieCredits.fromJson(data);
-        return Result<MovieCredits>(
-          success: true,
-          value: credits,
-          status: ResultStatus.done,
-        );
-      } else {
-        return Result<MovieCredits>(
-          success: false,
-          message: ErrorMessage('Unexpected response format', null),
-          userMessage: 'Invalid data from server',
-          status: ResultStatus.failed,
-        );
-      }
-    } catch (e, stack) {
-      return Result<MovieCredits>(
-        success: false,
-        message: ErrorMessage(e.toString(), stack),
-        userMessage: 'Failed to parse credits data',
-        status: ResultStatus.failed,
-      );
-    }
+  static MovieService create() {
+    final client = ChopperClient(
+      interceptors: [
+        HttpLoggingInterceptor(),
+        HeaderInterceptor(),
+        ErrorInterceptor(),
+      ],
+      baseUrl: Uri.parse(ApiEndpoints.movieUrl),
+      services: [_$MovieService()],
+      converter: const JsonConverter(),
+    );
+    return _$MovieService(client);
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tmdb_app/core/utils/choppers.dart';
 import 'package:tmdb_app/core/utils/providers.dart';
 import 'package:tmdb_app/presentation/view/screens/home/home_screen.dart';
 
@@ -10,7 +11,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-      providers: Providers.providers,
+      providers: [...chopperServices, ...providers],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'TMDB App',
